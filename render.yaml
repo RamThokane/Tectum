@@ -1,0 +1,59 @@
+# Render Blueprint: deploys Tectum as a single web service (API + built React app).
+# In Render: New > Blueprint > pick this repository. You'll be asked for the values marked sync: false.
+services:
+  - type: web
+    name: tectum
+    runtime: node
+    plan: free
+    # The database (MongoDB Atlas) is in Mumbai; Singapore is Render's closest region (~60 ms per
+    # database round trip vs ~220 ms from the default, Oregon). A region is fixed when the service
+    # is created, so an existing Oregon service must be re-created to move.
+    region: singapore
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      # The site's public address: used for the sitemap, robots.txt and canonical links.
+      - key: CLIENT_URL
+        value: https://www.tectum.co.in
+      # Requests slower than this (ms) are logged with their slowest database calls.
+      - key: SLOW_REQUEST_MS
+        value: "300"
+      - key: MONGO_URI
+        sync: false # MongoDB Atlas connection string
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # "Continue with Google" (OAuth client ID from console.cloud.google.com; not a secret)
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      # Email for "Forgot password" links and sign-up codes. Render's free plan blocks SMTP, so use
+      # Brevo (brevo.com, free): its API key, and MAIL_FROM = a sender address verified in Brevo.
+      - key: BREVO_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      # SMTP instead (only works on paid plans): e.g. Gmail: host smtp.gmail.com, port 465, a Gmail App Password
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "465"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false

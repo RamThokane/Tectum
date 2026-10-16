@@ -1,0 +1,463 @@
+/*
+ * ============================================================================
+ * Tectum design system v2 ("ds"): the single source of truth for the redesign.
+ * ----------------------------------------------------------------------------
+ * Editorial medical product: cool neutrals, one brand colour (Tectum blue), a warm coral
+ * accent used sparingly, a serif for titles, Geist for UI, Geist Mono for values.
+ *
+ * How it works
+ *  - Every value is a CSS variable on `.ds-light` / `.ds-dark` (and :root for light). Components
+ *    use only these (through the Tailwind utilities below), never `dark:` variants, so a subtree
+ *    switches theme just by its class (the /styleguide shows both side by side this way).
+ *  - `@theme inline` turns the variables into Tailwind utilities: bg-ds-surface, text-ds-fg,
+ *    border-ds-line, rounded-ds-md, text-body, font-editorial, shadow-ds-raised, ...
+ *  - Glass is only for things that float above content (bars, menus, sheets, tooltips, toasts,
+ *    the + button). Content cards are flat with a hairline border.
+ *
+ * Scales
+ *  - Type   12 caption · 13 meta · 15 body · 17 lead · 20 title · 28 headline · 40 display
+ *  - Radius 6 small (inputs, small things) · 12 cards · 20 glass panels / modals · 28 hero media · pill
+ *  - Space  4px base: 4 8 12 16 24 32 48 64 (Tailwind's 1 2 3 4 6 8 12 16)
+ *  - Depth  flat (hairline) · raised · floating
+ *  - Motion 150-200ms ease-out; hover lifts 1px, press scales 0.98
+ * ============================================================================
+ */
+
+/* ---------------------------------------------------------------- light (default) */
+/* color-scheme only on the theme classes: on :root it would also flip the current app's native
+   controls (scrollbars, date pickers) to light before the redesign is switched on. */
+.ds-light {
+  color-scheme: light;
+}
+:root,
+.ds-light {
+  /* neutrals: a slightly cool grey */
+  --ds-bg: #f6f7f9;
+  --ds-surface: #ffffff;
+  --ds-surface-2: #eff1f4; /* quiet fills: search, hover, quoted posts */
+  --ds-surface-3: #e5e8ed;
+  --ds-fg: #0e1116; /* text */
+  --ds-fg-2: #3f4753; /* secondary text, 9.3:1 on bg */
+  --ds-fg-3: #5d6574; /* meta text, 5.6:1 on bg, 5.3:1 on surface-2 */
+  --ds-fg-4: #8a919e; /* disabled, placeholders on white (decorative only) */
+  --ds-line: rgb(14 17 22 / 0.09); /* hairlines */
+  --ds-line-strong: rgb(14 17 22 / 0.16); /* input borders */
+
+  /* brand: Tectum blue - primary actions, active states, links */
+  --ds-brand: #2563eb; /* fill; white text 5.2:1 */
+  --ds-brand-hover: #1d4ed8;
+  --ds-brand-text: #1d4ed8; /* links / active text, 6.7:1 on white */
+  --ds-brand-soft: rgb(37 99 235 / 0.09);
+  --ds-on-brand: #ffffff;
+  --ds-focus: rgb(37 99 235 / 0.45);
+
+  /* accent: warm coral - streaks, highlights, unread (sparingly) */
+  --ds-accent: #f97362;
+  --ds-accent-text: #b8412f; /* coral as text, 5.5:1 on white */
+  --ds-on-accent: #2a0e08; /* text on a coral fill (badges): 6.6:1; white would be 2.7:1 */
+  --ds-accent-soft: rgb(249 115 98 / 0.12);
+
+  /* semantic: muted, never neon (text colours pass AA on white and on their soft fill) */
+  --ds-success: #2f7a4d;
+  --ds-success-soft: #e7f3ec;
+  --ds-warning: #93580b;
+  --ds-warning-soft: #fbf1e1;
+  --ds-danger: #b42a2f;
+  --ds-danger-soft: #fbeaea;
+  --ds-info: #2b5e99;
+  --ds-info-soft: #e8f0fa;
+
+  /* specialty dots: 8 harmonious hues, only ever as small dots */
+  --ds-spec-1: #2a9d8f; /* teal */
+  --ds-spec-2: #3e7cb1; /* blue */
+  --ds-spec-3: #6a5fc1; /* indigo */
+  --ds-spec-4: #a8559e; /* plum */
+  --ds-spec-5: #d65b56; /* red */
+  --ds-spec-6: #d48a2a; /* amber */
+  --ds-spec-7: #5f9a4e; /* green */
+  --ds-spec-8: #7d8592; /* slate */
+
+  /* chat */
+  --ds-bubble-in: #eceff3;
+
+  /* depth */
+  --ds-shadow-raised: 0 1px 2px rgb(15 23 42 / 0.05), 0 2px 8px -2px rgb(15 23 42 / 0.06);
+  --ds-shadow-floating: 0 2px 6px rgb(15 23 42 / 0.06), 0 12px 32px -8px rgb(15 23 42 / 0.14);
+
+  /* glass (floating surfaces only) */
+  --ds-glass-bg: rgb(255 255 255 / 0.6);
+  --ds-glass-bg-strong: rgb(255 255 255 / 0.78); /* menus, sheets: text behind must vanish */
+  --ds-glass-border: rgb(255 255 255 / 0.65);
+  --ds-glass-edge: rgb(14 17 22 / 0.07); /* outer hairline so white-on-white glass has an edge */
+  --ds-glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.5);
+  --ds-glass-shadow: 0 8px 32px rgb(15 23 42 / 0.08);
+  --ds-glass-solid: #ffffff; /* fallback when blur isn't available */
+  --ds-scrim: rgb(14 17 22 / 0.28);
+
+  /* background mesh: slow-drifting blobs the glass refracts */
+  --ds-blob-1: rgb(37 99 235 / 0.12); /* blue */
+  --ds-blob-2: rgb(79 70 229 / 0.09); /* indigo */
+  --ds-blob-3: rgb(249 115 98 / 0.1); /* coral */
+}
+
+/* ---------------------------------------------------------------- dark */
+/* html.dark: the app's own dark mode (theme.js / the theme switch) uses the same tokens */
+html.dark,
+.ds-dark {
+  color-scheme: dark;
+  --ds-bg: #0b0d12;
+  --ds-surface: #12151c;
+  --ds-surface-2: #191d26;
+  --ds-surface-3: #222733;
+  --ds-fg: #eceef2;
+  --ds-fg-2: #b3b9c5;
+  --ds-fg-3: #8f97a6; /* 6.2:1 on bg, 5.5:1 on surface */
+  --ds-fg-4: #5c6371;
+  --ds-line: rgb(255 255 255 / 0.08);
+  --ds-line-strong: rgb(255 255 255 / 0.15);
+
+  --ds-brand: #2563eb; /* buttons keep the brand blue (white text 5.2:1) */
+  --ds-brand-hover: #3b82f6;
+  --ds-brand-text: #60a5fa; /* links / active text on dark, 7.4:1 */
+  --ds-brand-soft: rgb(96 165 250 / 0.12);
+  --ds-on-brand: #ffffff;
+  --ds-focus: rgb(96 165 250 / 0.5);
+
+  --ds-accent: #f97362;
+  --ds-accent-text: #ff9a8b;
+  --ds-on-accent: #2a0e08;
+  --ds-accent-soft: rgb(249 115 98 / 0.14);
+
+  --ds-success: #6cc08f;
+  --ds-success-soft: rgb(108 192 143 / 0.12);
+  --ds-warning: #e3a858;
+  --ds-warning-soft: rgb(227 168 88 / 0.12);
+  --ds-danger: #f08a8a;
+  --ds-danger-soft: rgb(240 138 138 / 0.12);
+  --ds-info: #8db8ea;
+  --ds-info-soft: rgb(141 184 234 / 0.12);
+
+  --ds-spec-1: #48b8aa;
+  --ds-spec-2: #6a9fd0;
+  --ds-spec-3: #8f86dc;
+  --ds-spec-4: #c27bb8;
+  --ds-spec-5: #e37f7a;
+  --ds-spec-6: #e2a656;
+  --ds-spec-7: #82b871;
+  --ds-spec-8: #9aa2ae;
+
+  --ds-bubble-in: #1e2330;
+
+  --ds-shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px -2px rgb(0 0 0 / 0.35);
+  --ds-shadow-floating: 0 2px 6px rgb(0 0 0 / 0.3), 0 16px 40px -8px rgb(0 0 0 / 0.55);
+
+  --ds-glass-bg: rgb(18 20 26 / 0.6);
+  --ds-glass-bg-strong: rgb(18 20 26 / 0.8);
+  --ds-glass-border: rgb(255 255 255 / 0.08);
+  --ds-glass-edge: rgb(0 0 0 / 0.3);
+  --ds-glass-highlight: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --ds-glass-shadow: 0 8px 32px rgb(0 0 0 / 0.4);
+  --ds-glass-solid: #12151c;
+  --ds-scrim: rgb(0 0 0 / 0.5);
+
+  --ds-blob-1: rgb(59 130 246 / 0.14);
+  --ds-blob-2: rgb(99 102 241 / 0.11);
+  --ds-blob-3: rgb(249 115 98 / 0.08);
+}
+
+/* Fixed values (same in both themes) */
+:root {
+  --ds-r-sm: 6px;
+  --ds-r-md: 12px;
+  --ds-r-lg: 20px;
+  --ds-r-xl: 28px;
+  --ds-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ds-fast: 150ms;
+  --ds-med: 200ms;
+  --ds-glass-blur: blur(20px) saturate(160%);
+  /* 2.5% film grain on glass (an SVG noise tile) */
+  --ds-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------- Tailwind utilities from the tokens */
+@theme inline {
+  --color-ds-bg: var(--ds-bg);
+  --color-ds-surface: var(--ds-surface);
+  --color-ds-surface-2: var(--ds-surface-2);
+  --color-ds-surface-3: var(--ds-surface-3);
+  --color-ds-fg: var(--ds-fg);
+  --color-ds-fg-2: var(--ds-fg-2);
+  --color-ds-fg-3: var(--ds-fg-3);
+  --color-ds-fg-4: var(--ds-fg-4);
+  --color-ds-line: var(--ds-line);
+  --color-ds-line-strong: var(--ds-line-strong);
+  --color-ds-brand: var(--ds-brand);
+  --color-ds-brand-hover: var(--ds-brand-hover);
+  --color-ds-brand-text: var(--ds-brand-text);
+  --color-ds-brand-soft: var(--ds-brand-soft);
+  --color-ds-on-brand: var(--ds-on-brand);
+  --color-ds-accent: var(--ds-accent);
+  --color-ds-accent-text: var(--ds-accent-text);
+  --color-ds-on-accent: var(--ds-on-accent);
+  --color-ds-accent-soft: var(--ds-accent-soft);
+  --color-ds-success: var(--ds-success);
+  --color-ds-success-soft: var(--ds-success-soft);
+  --color-ds-warning: var(--ds-warning);
+  --color-ds-warning-soft: var(--ds-warning-soft);
+  --color-ds-danger: var(--ds-danger);
+  --color-ds-danger-soft: var(--ds-danger-soft);
+  --color-ds-info: var(--ds-info);
+  --color-ds-info-soft: var(--ds-info-soft);
+  --color-ds-bubble-in: var(--ds-bubble-in);
+  --color-ds-spec-1: var(--ds-spec-1);
+  --color-ds-spec-2: var(--ds-spec-2);
+  --color-ds-spec-3: var(--ds-spec-3);
+  --color-ds-spec-4: var(--ds-spec-4);
+  --color-ds-spec-5: var(--ds-spec-5);
+  --color-ds-spec-6: var(--ds-spec-6);
+  --color-ds-spec-7: var(--ds-spec-7);
+  --color-ds-spec-8: var(--ds-spec-8);
+
+  --radius-ds-sm: var(--ds-r-sm);
+  --radius-ds-md: var(--ds-r-md);
+  --radius-ds-lg: var(--ds-r-lg);
+  --radius-ds-xl: var(--ds-r-xl);
+
+  --shadow-ds-raised: var(--ds-shadow-raised);
+  --shadow-ds-floating: var(--ds-shadow-floating);
+
+  --font-editorial: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-ui: "Geist", "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-code: "Geist Mono", "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* type scale (size / line height / tracking) */
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--letter-spacing: 0.01em;
+  --text-meta: 13px;
+  --text-meta--line-height: 18px;
+  --text-body: 15px;
+  --text-body--line-height: 23px;
+  --text-lead: 17px;
+  --text-lead--line-height: 26px;
+  --text-title: 20px;
+  --text-title--line-height: 26px;
+  --text-title--letter-spacing: -0.01em;
+  --text-headline: 28px;
+  --text-headline--line-height: 32px;
+  --text-headline--letter-spacing: -0.015em;
+  --text-display: 40px;
+  --text-display--line-height: 44px;
+  --text-display--letter-spacing: -0.02em;
+}
+
+/* ---------------------------------------------------------------- surfaces */
+/* The page itself: cool background + the drifting mesh the glass refracts */
+@utility ds-canvas {
+  background-color: var(--ds-bg);
+  color: var(--ds-fg);
+  font-family: var(--font-ui);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+@utility ds-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 9999px;
+    filter: blur(80px);
+    animation: ds-drift 38s ease-in-out infinite alternate;
+  }
+  &::before {
+    top: -20vmax;
+    left: -15vmax;
+    background: radial-gradient(circle, var(--ds-blob-1), transparent 65%);
+  }
+  &::after {
+    bottom: -25vmax;
+    right: -15vmax;
+    background: radial-gradient(circle, var(--ds-blob-2), transparent 65%);
+    animation-duration: 46s;
+    animation-direction: alternate-reverse;
+  }
+}
+/* The app's backdrop: fixed behind every page, three soft blobs (blue, indigo, coral) drifting
+   slowly. Radial gradients moved by transform only (no blur filter), so it is cheap on phones. */
+@utility ds-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(36rem 30rem at 50% 105%, var(--ds-blob-3), transparent 70%),
+    var(--ds-bg);
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 70vmax;
+    height: 70vmax;
+    border-radius: 9999px;
+    will-change: transform;
+    animation: ds-drift 38s ease-in-out infinite alternate;
+  }
+  &::before {
+    top: -30vmax;
+    left: -25vmax;
+    background: radial-gradient(circle, var(--ds-blob-1), transparent 62%);
+  }
+  &::after {
+    top: -20vmax;
+    right: -30vmax;
+    background: radial-gradient(circle, var(--ds-blob-2), transparent 62%);
+    animation-duration: 46s;
+    animation-direction: alternate-reverse;
+  }
+}
+@keyframes ds-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vmax, 4vmax, 0) scale(1.08); }
+}
+
+/* Content: flat, hairline border, 12px corners. No blur, no shadow. */
+@utility ds-card {
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-md);
+}
+
+/* Glass: floating surfaces only. Solid until the browser can blur; noise grain on top. */
+@utility ds-glass {
+  background-color: var(--ds-glass-solid);
+  border: 1px solid var(--ds-glass-edge);
+  box-shadow: var(--ds-glass-highlight), var(--ds-glass-shadow);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: transparent;
+    background-image: var(--ds-noise), linear-gradient(var(--ds-glass-bg), var(--ds-glass-bg));
+    border-color: var(--ds-glass-border);
+    outline: 1px solid var(--ds-glass-edge);
+    outline-offset: -1px;
+    -webkit-backdrop-filter: var(--ds-glass-blur);
+    backdrop-filter: var(--ds-glass-blur); /* last: the minifier keeps only the final one of the pair */
+  }
+}
+/* Stronger glass for menus, sheets and dialogs: text behind must not be readable */
+@utility ds-glass-strong {
+  background-color: var(--ds-glass-solid);
+  border: 1px solid var(--ds-glass-edge);
+  box-shadow: var(--ds-glass-highlight), var(--ds-shadow-floating);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    background-color: transparent;
+    background-image: var(--ds-noise), linear-gradient(var(--ds-glass-bg-strong), var(--ds-glass-bg-strong));
+    border-color: var(--ds-glass-border);
+    outline: 1px solid var(--ds-glass-edge);
+    outline-offset: -1px;
+    -webkit-backdrop-filter: var(--ds-glass-blur);
+    backdrop-filter: var(--ds-glass-blur);
+  }
+}
+@utility ds-scrim {
+  background-color: var(--ds-scrim);
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+}
+
+/* Small uppercase section label: slight positive tracking */
+@utility ds-eyebrow {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-fg-3);
+}
+/* Numbers that line up in columns (stats, counts) */
+@utility ds-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+/* Keyboard focus: a blue ring that never shows for mouse clicks */
+@utility ds-focus {
+  &:focus-visible {
+    outline: 2px solid var(--ds-brand-text);
+    outline-offset: 2px;
+  }
+}
+/* Motion: hover lifts 1px, press scales 0.98 */
+@utility ds-press {
+  transition: transform var(--ds-fast) var(--ds-ease), background-color var(--ds-fast) var(--ds-ease),
+    border-color var(--ds-fast) var(--ds-ease), color var(--ds-fast) var(--ds-ease), box-shadow var(--ds-fast) var(--ds-ease);
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+@utility ds-lift {
+  transition: transform var(--ds-med) var(--ds-ease), box-shadow var(--ds-med) var(--ds-ease), border-color var(--ds-med) var(--ds-ease);
+  &:hover {
+    transform: translateY(-1px);
+    border-color: var(--ds-line-strong);
+  }
+}
+
+/* Entrances: fade + 8px rise (pages, modals); toasts slide in */
+@keyframes ds-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ds-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ds-slide-in {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: none; }
+}
+@utility ds-rise {
+  animation: ds-rise var(--ds-med) var(--ds-ease) both;
+}
+@utility ds-fade {
+  animation: ds-fade var(--ds-med) var(--ds-ease) both;
+}
+@utility ds-slide-in {
+  animation: ds-slide-in var(--ds-med) var(--ds-ease) both;
+}
+@utility ds-shimmer {
+  background: linear-gradient(90deg, var(--ds-surface-2) 0%, var(--ds-surface-3) 50%, var(--ds-surface-2) 100%);
+  background-size: 200% 100%;
+  animation: ds-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes ds-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+/* "Reduce transparency" / "Increase contrast": glass becomes solid. Reduced motion: no drift. */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root,
+  .ds-light,
+  .ds-dark {
+    --ds-glass-bg: var(--ds-glass-solid);
+    --ds-glass-bg-strong: var(--ds-glass-solid);
+    --ds-glass-blur: none;
+    --ds-noise: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-mesh::before,
+  .ds-mesh::after,
+  .ds-backdrop::before,
+  .ds-backdrop::after {
+    animation: none;
+  }
+}

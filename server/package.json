@@ -1,0 +1,48 @@
+{
+  "name": "tectum-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "make-admin": "node scripts/makeAdmin.js",
+    "seed": "node scripts/seed.js",
+    "seed-demo": "node scripts/seed-demo",
+    "seed-demo:check": "node scripts/seed-demo --check",
+    "seed-demo:csv": "node scripts/seed-demo --csv",
+    "seed-demo:cleanup": "node scripts/seed-demo --cleanup",
+    "lint": "eslint .",
+    "test": "node --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "view-report": "node scripts/viewInflation.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
+    "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.11.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.1",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.0",
+    "google-auth-library": "^11.1.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.1",
+    "morgan": "^1.12.1",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.10",
+    "socket.io": "^4.8.3",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "mongodb-memory-server": "^11.2.0"
+  }
+}

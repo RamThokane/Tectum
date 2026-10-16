@@ -1,0 +1,14 @@
+/**
+ * Allowed sign-up values, in sync with client/src/lib/courses.js and client/src/lib/countries.js.
+ */
+export const COURSE_VALUES = new Set(['mbbs', 'bds', 'bams', 'bhms', 'bums', 'bsms', 'bnys', 'bsc-nursing', 'post-basic-nursing', 'gnm', 'anm', 'msc-nursing', 'bpt', 'bot', 'bpharm', 'dpharm', 'pharmd', 'bmlt', 'bsc-allied', 'baslp', 'boptom', 'bsc-nutrition', 'bph', 'md', 'ms', 'dnb', 'mds', 'md-ayush', 'dm-mch', 'pg-diploma', 'mpt', 'mpharm', 'msc-medical', 'fellowship', 'phd', 'intl-md', 'other']);
+
+export const COUNTRY_CODES = new Set(['AF', 'AX', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN', 'BG', 'BF', 'BI', 'CV', 'KH', 'CM', 'CA', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO', 'KM', 'CG', 'CD', 'CK', 'CR', 'CI', 'HR', 'CU', 'CW', 'CY', 'CZ', 'DK', 'DJ', 'DM', 'DO', 'EC', 'EG', 'SV', 'GQ', 'ER', 'EE', 'SZ', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'GF', 'PF', 'TF', 'GA', 'GM', 'GE', 'DE', 'GH', 'GI', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GG', 'GN', 'GW', 'GY', 'HT', 'HM', 'VA', 'HN', 'HK', 'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IM', 'IL', 'IT', 'JM', 'JP', 'JE', 'JO', 'KZ', 'KE', 'KI', 'KP', 'KR', 'XK', 'KW', 'KG', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW', 'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'YT', 'MX', 'FM', 'MD', 'MC', 'MN', 'ME', 'MS', 'MA', 'MZ', 'MM', 'NA', 'NR', 'NP', 'NL', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MK', 'MP', 'NO', 'OM', 'PK', 'PW', 'PS', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PT', 'PR', 'QA', 'RE', 'RO', 'RU', 'RW', 'BL', 'SH', 'KN', 'LC', 'MF', 'PM', 'VC', 'WS', 'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SG', 'SX', 'SK', 'SI', 'SB', 'SO', 'ZA', 'GS', 'SS', 'ES', 'LK', 'SD', 'SR', 'SJ', 'SE', 'CH', 'SY', 'TW', 'TJ', 'TZ', 'TH', 'TL', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'AE', 'GB', 'US', 'UM', 'UY', 'UZ', 'VU', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'ZM', 'ZW']);
+
+/** Courses allowed per role (same rule as client/src/lib/courses.js); students and researchers: any. */
+const ROLE_COURSES = {
+  doctor: ['mbbs', 'bds', 'bams', 'bhms', 'bums', 'bsms', 'bnys', 'md', 'ms', 'dnb', 'mds', 'md-ayush', 'dm-mch', 'pg-diploma', 'fellowship', 'phd', 'intl-md'],
+  nurse: ['bsc-nursing', 'post-basic-nursing', 'gnm', 'anm', 'msc-nursing', 'phd'],
+  other: ['bpt', 'bot', 'bpharm', 'dpharm', 'pharmd', 'bmlt', 'bsc-allied', 'baslp', 'boptom', 'bsc-nutrition', 'bph', 'mpt', 'mpharm', 'msc-medical', 'pg-diploma', 'fellowship', 'phd'],
+};
+export const courseFitsRole = (course, role) => !course || course === 'other' || !ROLE_COURSES[role] || ROLE_COURSES[role].includes(course);

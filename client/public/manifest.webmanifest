@@ -1,0 +1,23 @@
+{
+  "name": "Tectum · Case-based medical learning",
+  "short_name": "Tectum",
+  "description": "Solve de-identified clinical cases, discuss with peers and revise with spaced-repetition flashcards.",
+  "id": "/",
+  "start_url": "/home?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#0b0d12",
+  "categories": ["education", "medical"],
+  "lang": "en-IN",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Case Rounds", "url": "/cases", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Notebook", "url": "/notebook", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
