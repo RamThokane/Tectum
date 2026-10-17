@@ -7,7 +7,7 @@
 <p align="center"><b>Learn medicine the way doctors think. One real case at a time.</b></p>
 
 <p align="center">
-  Case-based learning for MBBS students, interns and doctors: solve de-identified clinical cases,
+  Case based learning for MBBS students, interns and doctors: solve de-identified clinical cases,
   discuss them with peers and clinicians, and lock in what you learn with spaced-repetition flashcards.
 </p>
 
