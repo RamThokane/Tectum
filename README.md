@@ -8,7 +8,7 @@
 
 <p align="center">
   Case based learning for MBBS students, interns and doctors: solve de-identified clinical cases,
-  discuss them with peers and clinicians, and lock in what you learn with spaced-repetition flashcards.
+  discuss them with peers and clinicians, and lock in what you learn with spaced repetition flashcards.
 </p>
 
 ![Tectum home page](docs/screenshots/home.png)
